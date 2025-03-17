@@ -1,0 +1,47 @@
+import unittest
+from WHOLECODE import Student, Course, Professor, Grades, LoginUser  # Replace 'your_module' with the actual module name
+
+class TestStudent(unittest.TestCase):
+    def setUp(self):
+        self.student = Student("John", "Doe", "john.doe@example.com", ["Math", "Science"], ["A", "B"], [95, 85])
+
+    def test_display_records(self):
+        # Capture the printed output
+        import io
+        import sys
+        captured_output = io.StringIO()
+        sys.stdout = captured_output
+        self.student.display_records()
+        sys.stdout = sys.__stdout__
+        
+        output = captured_output.getvalue()
+        self.assertIn("John Doe", output)
+        self.assertIn("Math", output)
+        self.assertIn("A", output)
+
+    def test_add_new_student(self):
+        student_list = [self.student]
+        new_student = Student("Jane", "Doe", "jane.doe@example.com")
+        new_student.add_new_student(student_list)
+        self.assertEqual(len(student_list), 2)
+        
+        # Attempting to add duplicate student
+        duplicate_student = Student("John", "Doe", "john.doe@example.com")
+        duplicate_student.add_new_student(student_list)
+        self.assertEqual(len(student_list), 2)  # Should not be added
+
+    def test_add_1000_students(self):
+        student_list = []
+        for i in range(1000):
+            student = Student(f"First{i}", f"Last{i}", f"student{i}@example.com")
+            student.add_new_student(student_list)
+        self.assertEqual(len(student_list), 1000)
+        
+        # Ensure no duplicates when adding the same students again
+        for i in range(1000):
+            student = Student(f"First{i}", f"Last{i}", f"student{i}@example.com")
+            student.add_new_student(student_list)
+        self.assertEqual(len(student_list), 1000)  # No duplicates should be added
+
+if __name__ == "__main__":
+    unittest.main()
